@@ -1,5 +1,6 @@
 from craps import craps
 from blackjack import blackjack
+from hangman import DecideDashes, WordDecider, InitialDashes, GuessedLetters, hangman
 
 
 keepplaying = 'y'
@@ -18,15 +19,15 @@ while keepplaying.upper() == 'Y':
     print('''Here are the games that you can play:
     Craps
     BlackJack
-    Three card poker''')
+    hangman''')
     gameToPlay = input("What game would you like to play?\n")
     if gameToPlay == "Craps" or gameToPlay == "craps":
         money, keepplaying = craps(money)
         print(money)
     elif gameToPlay == "blackjack" or gameToPlay == "BlackJack" or gameToPlay == "Blackjack":
         money, keepplaying = blackjack(money)
-    elif gameToPlay == "Three Card Poker" or gameToPlay == "three card poker" or gameToPlay == "tcp":
-        threecardpoker(money)
+    elif gameToPlay.upper() == "HANGMAN":
+        hangman()
     else:
         print("That game is unavailable right now or you spelled it incorrectly. Please try again later"
               ", or learn to type.")
