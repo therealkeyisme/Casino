@@ -1,0 +1,15 @@
+ask for bet
+ask for pair plus
+3 cards to player, 3 to dealer
+flip dealer cards
+flip player cards
+
+dealer playes on Q or better
+if dealer doesnt play you get your bet back +1.5
+when dealer plays you can get it all back
+
+pair = 1to1
+flush = 4to1
+straight = 6to1
+threeofkind = 30to1
+straightflush = 40to1
