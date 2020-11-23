@@ -1,8 +1,17 @@
 import time
 import random
+from intcheck import intcheck
 
 
 def handtotal(hand):
+    """Analyzes the hand of the player to determine totals
+
+    Args:
+        hand (list): the cards that a player has in their hand
+
+    Returns:
+        int: The sum of the player/dealer's hand
+    """
     total = 0
     aces = 0
     for card in hand:
@@ -19,31 +28,64 @@ def handtotal(hand):
     return total
 
 
-def blackjack(balance):
+def winconditions(playertot, dealertot, balance, wager):
+    """Determines if a player has won or lost the game.
+
+    Args:
+        playertot (int): total of the cards in a player's hand
+        dealertot (int): total of the cards in the dealer's hand
+        balance (int): current balance after a wager has been placed
+        wager (int): how much money is on the line
+    """
+    win = 0
+    tie = 0
+    message = ""
+
+    if playertot == 21:
+        wager = wager * 2
+    elif playertot > 21:
+        win = False
+    elif dealertot > 21:
+        win = True
+    if dealertot < 21 and playertot < 21:
+        # Analyzes the various outcomes if both player's totals are below 21
+        if dealertot == playertot:
+            tie = True
+        elif dealertot > playertot:
+            win = False
+        elif playertot > dealertot:
+            win = True
+
+    if win == True:
+        balance = balance + (2 * wager)
+        message = "You win! The dealers total was {0} and your total was {1}. This brings your balance to ${2}"
+    elif tie == True:
+        balance = balance + wager
+        message = "You tied with the dealer. Both of your totals were {0}. This brings your balance to ${2}"
+    elif win == False:
+        message = "You lose. The dealer's total was {0} and your total was {1}. This brings your balance to ${2}"
+
+
+    print(message.format(str(dealertot), str(playertot), str(balance)))
+    return balance
+
+
+def blackjack(balance, deck):
     print("Welcome to blackjack.")
     mini = 0
     maxi = 51
-    deck = ['A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A', 2, 3,
-            4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K']
-    dealercards = []
-    playercards = []
+    wagerinputmessage = "What is your bet?\n"
     while balance > 0:
         toplay = input("Would you like to play Blackjack?\n")
         if toplay.upper() == "Y" or toplay.upper() == "YES":
+            playertot = 0
+            dealertot = 0
+            dealercards = []
+            playercards = []
             print("Okay, your current balance is {0}".format(balance))
-            while True:
-                try:
-                    wager = int(input("What is your bet?\n"))
-                    while wager > balance:
-                        wager = int(input("Your wager cannot be higher than your bank balance(${0}), please enter a "
-                                          "different wager price\n".format(str(balance))))
-                    while wager < 0:
-                        wager = int(input("Your wager cannot be negative, please enter a different wager value\n"))
-                    originalbalance = balance
-                    balance = balance - wager
-                    break
-                except ValueError:
-                    print("Your entry must be a numerical value!!")
+
+            wager = intcheck(wagerinputmessage, True, False, balance)
+            balance -= wager
             print("Your wager is ${0}, this makes your new balance ${1}".format(str(wager), str(balance)))
             while len(dealercards) < 2:
                 dealercards.append(deck[random.randint(mini, maxi)])
@@ -52,7 +94,7 @@ def blackjack(balance):
             playertot = handtotal(playercards)
             print("You drew a {0} and a {1}. Your total is {2}.The dealer's face up card is a {3}."
                   .format(str(playercards[1]), str(playercards[0]), str(playertot),
-                          str(dealercards[0]), str(dealertot)))
+                          str(dealercards[0])))
 
             if dealertot == 21:
                 print("You lose. The dealer got blackjack with {0}".format(str(dealertot)))
@@ -76,7 +118,7 @@ def blackjack(balance):
                     wager = wager * 2
                     playercards.append(deck[random.randint(mini, maxi)])
                     playertot = handtotal(playercards)
-                    print("You drew a {0}. This brings your total to {1}.".format(str(playercards[-1]), str(playertot)))
+                    print("Becuase you doubled, your new balance is now ${2}. You drew a {0}. This brings your total to {1}.".format(str(playercards[-1]), str(playertot), str(balance)))
                     break
             print("The dealer's face down card is a {0}.".format(str(dealercards[-1])))
             while dealertot < 17:
@@ -84,26 +126,7 @@ def blackjack(balance):
                 dealertot = handtotal(dealercards)
                 print("The dealer drew a {0}. Bringing his card total to {1}".format(str(dealercards[-1]),
                                                                                      str(dealertot)))
-            if dealertot != 21 and playertot == 21:
-                balance = balance + (2 * wager)
-                print("You win! The dealers total was {0} and your total was {1}. This brings your balance to ${2}"
-                      .format(str(dealertot), str(playertot), str(balance)))
-            elif (dealertot <= 21 and playertot <= 21) and dealertot == playertot:
-                balance = originalbalance
-                print("You tied. The dealers total was {0} and your total was {1}. This brings your balance to ${2}"
-                      .format(str(dealertot), str(playertot), str(balance)))
-            elif dealertot > 21 and playertot < 21:
-                balance = balance + (2 * wager)
-                print("You win! The dealers total was {0} and your total was {1}. This brings your balance to ${2}"
-                      .format(str(dealertot), str(playertot), str(balance)))
-            elif dealertot > playertot:
-                balance = balance + (2 * wager)
-                print("You lost. The dealers total was {0} and your total was {1}. This brings your balance to ${2}"
-                      .format(str(dealertot), str(playertot), str(balance)))
-            elif dealertot < playertot:
-                balance = balance + (2 * wager)
-                print("You win! The dealers total was {0} and your total was {1}. This brings your balance to ${2}"
-                      .format(str(dealertot), str(playertot), str(balance)))
+            balance = winconditions(playertot, dealertot, balance, wager)
         elif toplay.upper() == 'N' or toplay.upper() == 'NO':
             break
         else:

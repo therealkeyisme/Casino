@@ -1,10 +1,13 @@
 from craps import craps
 from blackjack import blackjack
-from hangman import DecideDashes, WordDecider, InitialDashes, GuessedLetters, hangman
-
+from hangman import hangman
+from intcheck import intcheck
 
 keepplaying = 'y'
-
+deck = ['A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A', 2, 3,
+            4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K', 'A', 2, 3, 4, 5, 6, 7, 8, 9, 10, 'J', 'Q', 'K']
+message = "How much money do you want to spend gambling?"
+money = intcheck(money, False, True, 0)
 while True:
     try:
         money = int(input("How much money do you want to spend gambling?\n"))
@@ -21,11 +24,11 @@ while keepplaying.upper() == 'Y':
     BlackJack
     hangman''')
     gameToPlay = input("What game would you like to play?\n")
-    if gameToPlay == "Craps" or gameToPlay == "craps":
-        money, keepplaying = craps(money)
+    if gameToPlay.upper() == "CRAPS":
+        money, keepplaying = craps(money, deck)
         print(money)
-    elif gameToPlay == "blackjack" or gameToPlay == "BlackJack" or gameToPlay == "Blackjack":
-        money, keepplaying = blackjack(money)
+    elif gameToPlay.upper() == "BLACKJACK":
+        money, keepplaying = blackjack(money, deck)
     elif gameToPlay.upper() == "HANGMAN":
         hangman()
     else:
